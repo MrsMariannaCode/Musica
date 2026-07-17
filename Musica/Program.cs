@@ -27,7 +27,7 @@ app.MapGet("/", () =>
     return Results.Ok("API Musica funcionando com sucesso!");
 });
 
- app.MapPost("/Melodia", (JsonElement body) =>
+ app.MapPost("/melodia", (JsonElement body) =>
 {
     Random random = new();
         Melodia melodia = new Melodia();
@@ -45,5 +45,15 @@ app.MapGet("/", () =>
             new {melodia}
         );
 });
-
+app.MapGet("/melodia/listagem", () =>
+{
+    Melodia[] melodiasCadastradas = new Melodia[totalMelodias];
+    for(int i = 0; i < totalMelodias; i++)
+    {
+        melodiasCadastradas[i] = melodias[i];
+    }
+    return Results.Ok(
+    new{ melodiasCadastradas}
+    );
+ });
 app.Run();
