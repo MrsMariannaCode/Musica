@@ -56,4 +56,93 @@ app.MapGet("/melodia/listagem", () =>
     new{ melodiasCadastradas}
     );
  });
+ app.MapGet("melodia/{titulo}", (string titulo) =>
+{
+   Melodia[] melodiasEncontradas = new Melodia[totalMelodias];
+
+    int totalEncontradas = 0;
+
+    for (int i = 0; i < totalMelodias; i++)
+    {
+        if (melodias[i].Titulo.ToLower() == titulo.ToLower())
+       
+        {
+            melodiasEncontradas[totalEncontradas] = melodias[i];
+            totalEncontradas++;
+        }
+    }
+
+    if (totalEncontradas > 0)
+    {
+        Melodia[] resultadoFinal = new Melodia[totalEncontradas];
+
+        for (int i = 0; i < totalEncontradas; i++)
+        {
+            resultadoFinal[i] = melodiasEncontradas[i];
+        }        
+
+        return Results.Ok(new
+        {
+            titulo,
+            melodias = melodiasEncontradas
+        });
+    } 
+
+    return Results.NotFound(new
+    {
+        message = "Nenhum titulo como esse encontrado"
+    });
+});
+app.MapPatch("/melodia/{id}", (int id, JsonElement body) =>
+{
+    string novo_titulo = body.GetProperty("titulo").GetString();
+
+    for (int i = 0; i < totalMelodias; i++)
+    {
+        if (melodias[i].Id == id)
+        {
+            melodias[i].Titulo = novo_titulo;
+
+            return Results.Ok(
+                new
+                {
+                    melodia = melodias[i]
+                }
+            );
+        }
+    }
+
+    return Results.NotFound(new
+    {
+        message = "Música não encontrada."
+    });
+});
+app.MapDelete("/melodia", (int id) =>
+{
+    for (int i = 0; i < totalMelodias; i++)
+    {
+        if (melodias[i].Id == id)
+        {
+            Melodia melodiaRemovida = melodias[i];
+            
+            for (int j = i; j < totalMelodias - 1; j++)
+            {
+                melodias[j] = melodias[j + 1];
+            }            
+
+            totalMelodias--;
+
+            return Results.Ok(new
+            {
+                mensagem = "Musica removida com sucesso.",
+                melodia = melodiaRemovida
+            });
+        }
+    }
+
+    return Results.NotFound(new
+    {
+        message = "Melodia não encontrada."
+    });
+});
 app.Run();
