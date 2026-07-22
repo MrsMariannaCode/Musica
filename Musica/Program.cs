@@ -117,32 +117,22 @@ app.MapPatch("/melodia/{id}", (int id, JsonElement body) =>
         message = "Música não encontrada."
     });
 });
-app.MapDelete("/melodia", (int id) =>
+app.MapDelete("/musica/deletar/{id}", (int id) =>
 {
-    for (int i = 0; i < totalMelodias; i++)
-    {
-        if (melodias[i].Id == id)
-        {
-            Melodia melodiaRemovida = melodias[i];
-            
-            for (int j = i; j < totalMelodias - 1; j++)
-            {
-                melodias[j] = melodias[j + 1];
-            }            
-
-            totalMelodias--;
-
-            return Results.Ok(new
+     for(int i=0; i<totalMelodias; i++){
+         if(melodias[i].Id == id){
+            Melodia Melodia_removida = melodias[i];
+              for(int x = i; x < totalMelodias - 1; x++){
+                      melodias[x] = melodias[x+1];   
+              }
+              totalMelodias--;
+               return Results.Ok(new
             {
                 mensagem = "Musica removida com sucesso.",
-                melodia = melodiaRemovida
+                melodia = Melodia_removida
             });
-        }
-    }
-
-    return Results.NotFound(new
-    {
-        message = "Melodia não encontrada."
-    });
+         }
+     }
+        return Results.NotFound(new {message = "musica não encontrada"});
 });
 app.Run();
